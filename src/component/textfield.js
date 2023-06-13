@@ -1,9 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import { Button, TextField, MenuItem, Box,} from '@mui/material';
+import Infogrid from './Infogrid';
+import Search from './Search';
 
 
-const FristSelect = [
+const FirstSelect = [
     {
       value: 'player',
       label: 'player'
@@ -46,8 +48,15 @@ function BasicTextFields() {
 
     const handleSecondMenuItemChange = (event) => {
         setSelectedOption2(event.target.value); 
+        console.log(event.target.value);
     };
+
+    const handleSearch = () => {
+        Search(selectedOption1, selectedOption2);
+    }
+
     return (
+    <div>
       <Box
         component="form"
         sx={{
@@ -66,7 +75,7 @@ function BasicTextFields() {
           onChange={handleFirstMenuItemChange}
           helperText="Please select your currency"
         >
-        {FristSelect.map((option) => (
+        {FirstSelect.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>
@@ -80,20 +89,23 @@ function BasicTextFields() {
           onChange={handleSecondMenuItemChange}
           helperText="Please select your currency"
         >
-        {Second_Select[selectedOption1]?.map((FristSelect) => (
-          <MenuItem key={FristSelect.value} value={FristSelect.value}>
-            {FristSelect.label}
+        {Second_Select[selectedOption1]?.map((FirstSelect) => (
+          <MenuItem key={FirstSelect.value} value={FirstSelect.value}>
+            {FirstSelect.label}
           </MenuItem>
         ))}
         </TextField>
         <TextField id="outlined-basic" variant="outlined" />
         <Button 
-          variant="contained" 
-          sx = {{
-            height: 54
-          }}
-          >검색</Button>
-      </Box>
+            onClick={handleSearch}
+            variant="contained" 
+            sx = {{
+                height: 54
+            }}
+        >검색</Button>
+        </Box>
+        
+    </div>
     );
   }
   
