@@ -1,26 +1,28 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, TableContainer } from '@mui/material';
+import { Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Paper } from '@mui/material';
+import ImageLoad from './ImageLoad';
 
 function TableContainerComponent({ columnNames, tableData }) {
-  console.log(columnNames, tableData);
   return (
     <TableContainer>
       <Table>
-        <TableHead>
+        <TableHead >
           <TableRow>
-            {/* 열 제목을 동적으로 추가합니다 */}
             {columnNames.map((columnName, index) => (
-              <TableCell key={index}>{columnName}</TableCell>
+              <TableCell key={index} sx={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>{columnName}</TableCell>
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>
-          <TableRow>
-              {tableData.map((row, index) => (
-              <TableCell key={index}>{row}</TableCell>
-              // 각 셀의 데이터를 동적으로 추가합니다
-          ))}
-          </TableRow>
+        <TableBody >
+            {tableData.map((row, rowIndex) => (
+              <TableRow key={rowIndex} >
+                {row.map((cell, cellIndex) => (
+                  <TableCell key={cellIndex} sx={{textAlign: 'center', fontSize: 15}}>
+                    {typeof cell === 'object' ? ImageLoad(cell) : cell}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

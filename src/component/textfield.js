@@ -31,8 +31,8 @@ const Second_Select = {
     ],
     teams: [
         {value: 'team_name',label: 'team_name'},
-        {value: 'team_city',label: 'team_city'},
-        {value: 'team_abbreviation',label: 'team_abbreviation'}
+        {value: 'city',label: 'team_city'},
+        {value: 'abbreviation',label: 'team_abbreviation'}
     ]
 }
 
@@ -41,7 +41,7 @@ function BasicTextFields() {
     const [selectedOption2, setSelectedOption2] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [tableData, setTableData] = useState([]);
-    const [columnName, setColumnName] = useState([]);
+    const [columnNames, setColumnNames] = useState([]);
   
     const handleFirstMenuItemChange = (event) => {
       setSelectedOption1(event.target.value);
@@ -56,41 +56,44 @@ function BasicTextFields() {
       setInputValue(event.target.value);
     }
 
+    const onKeyDown = (e) => {
+      if(e.key === 'Enter') {
+        handleSearch();
+      }
+    }
+
     const handleSearch = () => {
-      // 데이터베이스 조회 요청을 보내고, 응답 받은 데이터를 처리합니다.
-      // axios.get(`http://ipmango.synology.me:5010/${selectedOption1}?attributeName=${selectedOption2}attributeValue=${inputValue}`)
       axios.get(`http://localhost:3010/${selectedOption1}?attributeName=${selectedOption2}&attributeValue=${inputValue}`)
         .then((response) => {
-          // 응답 데이터를 확인하고 원하는 형태로 가공합니다.
-          const data = response.data;
-          console.log(data);
-          setTableData(data)
+          const data = response.data
+          const dataArr = data.map(row => Object.values(row))
+          console.log(dataArr.map(row => row.map(cell => typeof cell)))
+          setTableData(dataArr);
         })
         .catch((error) => {
-          // 에러 처리 로직을 구현합니다.
           console.log(error);
         });
       axios.get(`http://localhost:3010/column?attributeName=${selectedOption1}`)
         .then((response) => {
           const Column = response.data;
-          const columnName = Column.map(row => row.COLUMN_NAME);
-          console.log(columnName);
-          setColumnName(columnName);
+          const columnNames = Column.map(row => row.COLUMN_NAME);
+          selectedOption2 === 'player_team'? columnNames.push('team_name'):console.log('insert team_name');
+          selectedOption1 === 'player_stats'? columnNames.unshift('player_name') : selectedOption1 === 'players'? columnNames.push('image'):console.log('skip');
+          setColumnNames(columnNames);
         })
         .catch((error) => {
-          // 에러 처리 로직을 구현합니다.
           console.log(error);
         });
     };
-
     return (
-    <div>
+    <div style={{display: 'flex', flexDirection: 'column'}}>
       <Box
         component="form"
         sx={{
           justifyContent: 'center',
           display: 'flex',
           '& > :not(style)': { m: 1, width: '25ch' },
+          position: 'fixed', top: 0, width: '100%' 
         }}
         noValidate
         autoComplete="off"
@@ -123,16 +126,24 @@ function BasicTextFields() {
           </MenuItem>
         ))}
         </TextField>
-        <TextField id="outlined-basic" variant="outlined" value={inputValue} onChange={handleInputValue} />
+        <TextField id="outlined-basic" variant="outlined" value={inputValue} onChange={handleInputValue} onKeyDown={onKeyDown}/>
         <Button 
-            onClick={handleSearch}
-            variant="contained" 
-            sx = {{
-                height: 54
-            }}
+          onClick={handleSearch}
+          variant="contained" 
+          sx = {{
+              height: 54
+          }}
         >검색</Button>
         </Box>
-        <TableContainerComponent columnNames={columnName} tableData={tableData} />
+        <Box sx={{
+          marginTop: "7%",
+            overflow: 'auto',
+            position: 'fixed',
+            top: 0,
+            width: '100%', 
+            height: '100%'}}>
+          <TableContainerComponent columnNames={columnNames} tableData={tableData} />
+        </Box>
     </div>
     );
   }
