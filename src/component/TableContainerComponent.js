@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Paper } from '@mui/material';
+import { Table, TableHead, TableRow, TableCell, TableBody, TableContainer} from '@mui/material';
 import ImageLoad from './ImageLoad';
 
 function TableContainerComponent({ columnNames, tableData }) {
@@ -24,7 +24,7 @@ function TableContainerComponent({ columnNames, tableData }) {
               </TableRow>
             ))}
         </TableBody>
-      </Table>
+      </Table> 
     </TableContainer>
   );
 }
